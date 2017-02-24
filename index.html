@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="windows-1251">
+    <style>
+        html {
+            height: 100%;
+            overflow-y: hidden;
+
+        }
+
+        body {
+            height: 100%;
+            overflow-y: hidden;
+            position: relative;
+            padding: 0;
+            margin: 0;
+            bottom: 0;
+            background: url(tlen2.jpg) no-repeat;
+            -moz-background-size: cover; /* Firefox 3.6+ */
+            -webkit-background-size: cover; /* Safari 3.1+ и Chrome 4.0+ */
+            -o-background-size: cover; /* Opera 9.6+ */
+            background-size: cover; /* Современные браузеры */
+        }
+
+        .main {
+            height: 100%;
+            width: 100%;
+            display: table;
+        }
+
+        .wrapper {
+            display: table-cell;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        #app {
+            position: relative;
+            text-align: center;
+            margin-left: -400px;
+            left: 50%;
+            width: 800px;
+        }
+
+        #advice {
+            font-weight: 300;
+            font-size: 80px;
+            font-family: 'Oswald', sans-serif;
+            text-shadow: #000 0 0 20px;
+
+            -webkit-transition: text-shadow 1s ease-out;
+            -moz-transition: text-shadow 1s ease-out;
+            -ms-transition: text-shadow 1s ease-out;
+            -o-transition: text-shadow 1s ease-out;
+            transition: text-shadow 1s ease-out;
+
+            color: transparent;
+        }
+
+        #quest {
+            font-weight: 300;
+            font-size: 80px;
+            font-family: 'Oswald', sans-serif;
+            text-shadow: #000 0 0 9px;
+            color: transparent;
+        }
+
+        .q-wrap {
+            padding-top: 100px;
+            width: 100%;
+            position: absolute;
+            text-align: center;
+        }
+
+        .semi-transparent-button {
+            opacity: 0;
+            box-sizing: border-box;
+            margin: 0 10px;
+            padding: 10px 123px;
+            width: 80%;
+            max-width: 200px;
+            background: #fff;
+            background: rgba(55, 55, 55, 0.5);
+            font-family: 'Oswald', sans-serif;
+            color: #bbb;
+            font-size: 20px;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: all 0.5s linear;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400&amp;subset=cyrillic" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="q-wrap">
+    <h1 id="quest">Будет туса?</h1>
+</div>
+<div class="main">
+    <div class="wrapper">
+        <div id="app">
+            <div>
+                <h1 id="advice"></h1>
+            </div>
+            <div>
+                <div style="display: inline">
+                    <a class="semi-transparent-button" id="minus" href="#">Нет</a>
+                </div>
+                <div style="display: inline">
+                    <a class="semi-transparent-button" id="plus" href="#">Еще!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var id;
+    function new_advice() {
+        $.get("http://wildfly-artmordent.rhcloud.com:8080/wtd/getRandomAdvice", function (data, status) {
+            $("#advice").text(data.advice);
+            id = data.id;
+            $("#advice").css("text-shadow", "#000 0 0 5px");
+            $(".semi-transparent-button").css("opacity", 1);
+        });
+    }
+
+    new_advice();
+
+    $("#plus").click(function () {
+        var data = "\"" + id + "\"";
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            url: "http://wildfly-artmordent.rhcloud.com:8080/wtd/plus",
+            data: data,
+            dataType: 'application/json'
+        });
+        $("#advice").css("text-shadow", "#000 0 0 20px");
+        setTimeout(function () {
+            new_advice();
+        }, 700);
+    });
+
+    $("#minus").click(function () {
+        var data = "\"" + id + "\"";
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            url: "http://wildfly-artmordent.rhcloud.com:8080/wtd/minus",
+            data: data,
+            dataType: 'application/json'
+        });
+        $("#advice").css("text-shadow", "#000 0 0 20px");
+        setTimeout(function () {
+            new_advice();
+        }, 700);
+    });
+</script>
+
+</body>
+</html>
